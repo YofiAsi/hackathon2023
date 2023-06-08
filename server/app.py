@@ -1,8 +1,9 @@
 from flask import Flask, request
 from .db import db, init_db
-from .models.User import User
+from .models import User
 
 app = Flask(__name__)
+init_db(app)
 
 SUCCESS = "Okay"
 
@@ -15,7 +16,7 @@ def user_create():
     user = User(
         username=request.args["name"],
         email=request.args["email"],
-        gender=request.args['gender'],
+        gender=request.args["gender"],
     )
     db.session.add(user)
     db.session.commit()
@@ -42,5 +43,5 @@ def test():
     users = db.session.execute(db.select(User).order_by(User.username)).scalars()
     return [user.id for user in users]
 
-init_db(app)
-app.run()
+if __name__ == "__main__":
+    app.run()
