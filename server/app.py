@@ -1,15 +1,16 @@
 from flask import Flask, request
 from .db import db, init_db
 from .models import User
-
+from . import locationSuccess
 app = Flask(__name__)
-init_db(app)
 
 SUCCESS = "Okay"
 
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
+
+app.register_blueprint(locationSuccess.bp, url_prefix="/locationSuccess")
 
 @app.route("/create", methods=["POST"])
 def user_create():
@@ -40,8 +41,11 @@ def user_delete(id):
 
 @app.route("/test")
 def test():
-    users = db.session.execute(db.select(User).order_by(User.username)).scalars()
+    users = db.session.execute(db.select(User).order_by(User.name)).scalars()
     return [user.id for user in users]
 
+DEBUG = True
+
 if __name__ == "__main__":
-    app.run()
+    init_db(app, DEBUG)
+    app.run(debug=DEBUG)

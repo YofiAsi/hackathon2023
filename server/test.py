@@ -1,12 +1,10 @@
-from .app import app
-from .db import db
 from . import clustering
 from .models.User import User
 from .models.Event import Event, Attendee
 import IPython
 from datetime import datetime
 
-with app.app_context():
+def create_db(db, interactive=False):
     events = list(db.session.execute(db.select(Event)).scalars())
 
     if not events:
@@ -17,10 +15,12 @@ with app.app_context():
             latitude=30,
         )
 
-        for i in range(100):
+        for i in range(30):
             user = User(
                 name=f'user{i}',
                 email=f'user{i}@gmail.com',
+                latitude=37,
+                longitude=37,
             )
             db.session.add(user)
             db.session.commit()
@@ -29,4 +29,13 @@ with app.app_context():
         db.session.add(event)
         db.session.commit()
 
-    IPython.embed()
+        print('created event')
+
+    if interactive:
+        IPython.embed()
+
+
+if __name__ == '__main__':
+    from .db import db
+    with db.app.app_context():
+        create_db(db, interactive=True)
