@@ -2,7 +2,7 @@ from .app import app
 from .db import db
 from . import clustering
 from .models.User import User
-from .models.Event import Event, EventUsers
+from .models.Event import Event, Attendee
 import IPython
 from datetime import datetime
 
@@ -23,10 +23,10 @@ with app.app_context():
                 email=f'user{i}@gmail.com',
             )
             db.session.add(user)
-            event.users.append(user)
+            db.session.commit()
+            event.attendees.append(Attendee(user_id=user.id, is_driver=False))
 
         db.session.add(event)
-
         db.session.commit()
 
     IPython.embed()
