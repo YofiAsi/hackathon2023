@@ -24,5 +24,4 @@ class Attendee(db.Model):
     gender = db.Column(db.Integer)
 
     assigned_driver_id = db.Column(db.Integer, db.ForeignKey("attendee.user_id"), primary_key=True, nullable=True)
-    # assigned_driver = db.relationship("Attendee", foreign_keys=[assigned_driver_id], back_populates="assigned_passengers")
     assigned_passengers = db.relationship("Attendee", foreign_keys=[assigned_driver_id], backref=db.backref("assigned_driver", remote_side=[user_id]))
