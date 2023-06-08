@@ -44,15 +44,21 @@ def test():
     users = db.session.execute(db.select(User).order_by(User.name)).scalars()
     return [user.id for user in users]
 
+
+
+from flask_graphql import GraphQLView
+from .graphql import schema
+app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
+
+
 DEBUG = True
-HANDLE_EVENT = True
+HANDLE_EVENT = False
 if __name__ == "__main__":
     init_db(app, DEBUG)
-    
+
     if HANDLE_EVENT:
         from .handle_event import handle_event
         with app.app_context():
             handle_event()
     else:
-       
         app.run(debug=DEBUG)
