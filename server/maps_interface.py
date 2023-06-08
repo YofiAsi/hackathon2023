@@ -1,6 +1,6 @@
 import requests
 import json
- 
+import math
 
 
 ACCESS_TOKEN = 'pk.eyJ1IjoiZG9yZmFsYWgiLCJhIjoiY2xpbXg5Mm5pMHZlODNmbW1lbmhqa2o2ciJ9.8L61s6cS4pxPs3iqE7h2CQ'
@@ -9,7 +9,8 @@ MINUTES = 60
 ZERO_WEIGHT = 0
 GENDER_WEIGHT = 5
 WALK_PACE=85
-
+BOUNDBOX_EPSILON = 1/111
+INF_WEIGHT = math.inf
 
 
 def calc_dist_weight(driver_latitude:float,driver_longitude:float, passenger_latitude:float,passenger_longitude):
@@ -27,10 +28,27 @@ def calc_gender_weight(driver_geneder:str,passenger_gender):
         return ZERO_WEIGHT
     return GENDER_WEIGHT
 
+def calc_driver_boundingbox(event,driver):
+    x_left = min(driver.longitude,event.longitude) - BOUNDBOX_EPSILON
+    x_right = max(driver.longitude,event.longitude) + BOUNDBOX_EPSILON
+    y_low= min(driver.latitdude,event.latitdude) - BOUNDBOX_EPSILON
+    y_high= max(driver.latitdude,event.latitdude) + BOUNDBOX_EPSILON
+    return (x_left, x_right, y_low, y_high)
+
+def calc_bounding_box_weight(event,driver,passenger):
+    driver_bounding_box = calc_driver_boundingbox(event,driver)
+    if passenger.longitude > driver_bounding_box[0] and passenger.longitude <driver_bounding_box[1]:
+        if passenger.latitdude > driver_bounding_box[2] and passenger.latitdude <driver_bounding_box[3]:
+            return ZERO_WEIGHT
+    return INF_WEIGHT
+
 def get_weight(driver,passenger):
     distance_weight = calc_dist_weight(driver.latitdude,driver.longitude,passenger.latitude,passenger.longitude)
     gender_weight = calc_gender_weight(driver.geneder,passenger.gender)
-    return distance_weight + gender_weight   
+    bounding_box_weight = calc_bounding_box_weight
+    return distance_weight + gender_weight + bounding_box_weight
+
+
  
 
 
