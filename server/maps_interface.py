@@ -43,10 +43,12 @@ def calc_bounding_box_weight(driver,passenger):
     return INF_WEIGHT
 
 def get_weight(driver,passenger):
+    bounding_box_weight = calc_bounding_box_weight(driver)
+    if bounding_box_weight != ZERO_WEIGHT:
+        return INF_WEIGHT
     distance_weight = calc_dist_weight(driver.latitdude,driver.longitude,passenger.latitude,passenger.longitude)
     gender_weight = calc_gender_weight(driver.geneder,passenger.gender)
-    bounding_box_weight = calc_bounding_box_weight(driver)
-    return distance_weight + gender_weight + bounding_box_weight
+    return distance_weight + gender_weight
 
 
  
