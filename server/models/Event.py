@@ -8,13 +8,12 @@ EventUsers = db.Table(
 )
 
 class Event(db.Model):
-    __tablename__ = 'event'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
     time = db.Column(db.DateTime, nullable=False)
     longtitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
+    # users = db.relationship(secondary=association_table)
 
 # class EventUser(db.Model):
 #     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
