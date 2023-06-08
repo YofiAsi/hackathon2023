@@ -15,6 +15,7 @@ def user_create():
     user = User(
         username=request.args["name"],
         email=request.args["email"],
+        gender=request.args['gender'],
     )
     db.session.add(user)
     db.session.commit()
