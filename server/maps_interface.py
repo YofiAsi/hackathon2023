@@ -29,7 +29,7 @@ def calc_gender_weight(driver_geneder:str,passenger_gender):
     return GENDER_WEIGHT
 
 def calc_driver_boundingbox(driver):
-    x_left = min(driver.longitude,self.event.longitude) - BOUNDBOX_EPSILON
+    x_left = min(driver.longitude,self.git.longitude) - BOUNDBOX_EPSILON
     x_right = max(driver.longitude,self.event.longitude) + BOUNDBOX_EPSILON
     y_low= min(driver.latitdude,self.event.latitdude) - BOUNDBOX_EPSILON
     y_high= max(driver.latitdude,self.event.latitdude) + BOUNDBOX_EPSILON
