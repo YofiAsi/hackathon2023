@@ -129,7 +129,7 @@ class Cluster:
             return ZERO_WEIGHT
         return round(min(duration, distance / WALK_PACE), 3)
 
-    def calc_gender_weight(self, driver_gender: str, passenger_gender):
+    def calc_gender_weight(self, driver_gender, passenger_gender):
         if driver_gender == passenger_gender:
             return ZERO_WEIGHT
         return GENDER_WEIGHT
