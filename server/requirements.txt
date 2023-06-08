@@ -1,3 +1,4 @@
 flask
-networkx
 Flask-SQLAlchemy
+networkx
+IPython
