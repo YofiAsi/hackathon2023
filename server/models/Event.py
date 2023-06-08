@@ -18,8 +18,10 @@ class Attendee(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     user = db.relationship(User, foreign_keys=[user_id])
     is_driver = db.Column(db.Boolean, nullable=False)
+    capacity = db.Column(db.Integer)
     pick_up_longtitude = db.Column(db.Float)
     pick_up_latitude = db.Column(db.Float)
+    gender = db.Column(db.Integer)
 
 
 # class Passengers(db.Model):

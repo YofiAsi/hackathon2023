@@ -45,7 +45,14 @@ def test():
     return [user.id for user in users]
 
 DEBUG = True
-
+HANDLE_EVENT = True
 if __name__ == "__main__":
     init_db(app, DEBUG)
-    app.run(debug=DEBUG)
+    
+    if HANDLE_EVENT:
+        from .handle_event import handle_event
+        with app.app_context():
+            handle_event()
+    else:
+       
+        app.run(debug=DEBUG)
