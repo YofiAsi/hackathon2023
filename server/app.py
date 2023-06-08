@@ -43,4 +43,6 @@ def test():
     return [user.id for user in users]
 
 init_db(app)
-app.run()
+
+if __name__ == "__main__":
+    app.run()
