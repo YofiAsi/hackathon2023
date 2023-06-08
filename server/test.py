@@ -25,10 +25,26 @@ def create_db(db, interactive=False):
             )
             db.session.add(user)
             db.session.commit()
+
             if i % 2 == 0:
-                event.attendees.append(Attendee(user_id=user.id, is_driver=True, capacity=max(1,i%5), pick_up_latitude=user.latitude, pick_up_longtitude=user.longitude,gender=user.gender))
+                event.attendees.append(Attendee(
+                    user_id=user.id,
+                    is_driver=True,
+                    capacity=max(1, i%5),
+                    pick_up_latitude=user.latitude,
+                    pick_up_longtitude=user.longitude,
+                    gender=user.gender,
+                ))
             else:
-                event.attendees.append(Attendee(user_id=user.id, is_driver=False, capacity=0 , pick_up_latitude=user.latitude, pick_up_longtitude=user.longitude, gender = user.gender))
+                event.attendees.append(Attendee(
+                    user_id=user.id,
+                    is_driver=False,
+                    capacity=0,
+                    pick_up_latitude=user.latitude,
+                    pick_up_longtitude=user.longitude,
+                    gender=user.gender,
+                ))
+                event.attendees[-1].assigned_driver = event.attendees[0]
 
         db.session.add(event)
         db.session.commit()
@@ -40,6 +56,8 @@ def create_db(db, interactive=False):
 
 
 if __name__ == '__main__':
-    from .db import db
-    with db.app.app_context():
+    from .db import db, init_db
+    from .app import app
+    init_db(app, debug=False)
+    with app.app_context():
         create_db(db, interactive=True)

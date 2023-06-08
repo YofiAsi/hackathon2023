@@ -1,4 +1,8 @@
 flask
 Flask-SQLAlchemy
 networkx
+graphene
+graphene-sqlalchemy
+flask-graphql
+mapbox
 IPython
