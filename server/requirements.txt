@@ -2,3 +2,6 @@ flask
 Flask-SQLAlchemy
 networkx
 IPython
+matplotlib
+IPython
+pydot

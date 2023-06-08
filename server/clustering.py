@@ -9,7 +9,7 @@ from .app import app
 from sqlalchemy import and_
 import math
 from matplotlib import pyplot as plt
-import warnings 
+import threading
 
 SOURCE = -1
 SINK = -2
@@ -22,6 +22,7 @@ GENDER_WEIGHT = 5
 WALK_PACE = 85
 BOUNDBOX_EPSILON = 1/111
 INF_WEIGHT = math.inf
+WORKERS=100
 requests.packages.urllib3.disable_warnings() 
 
 class Cluster:
@@ -55,14 +56,27 @@ class Cluster:
         for driver in self.drivers:
             self.graph.add_edge(SOURCE, driver.user_id, capacity=driver.capacity, weight=0)
         print("finished adding source to drivers")
+    
+    def calc_edge(self,driver,passenger):
+            weight = self.get_weight(driver, passenger) 
+            if weight <= EDGE_MAX_DISTANCE:
+                self.graph.add_edge(driver.user_id, passenger.user_id, capacity = 1, weight = weight)
 
+   
     def add_edges_from_drivers_to_passengers(self):
+
+        cnt=0
         for driver in self.drivers:
-            for passenger in self.passengers:
-                # how to get driver and passenger to get weight
-                weight = self.get_weight(driver, passenger) 
-                if weight <= EDGE_MAX_DISTANCE:
-                    self.graph.add_edge(driver.user_id, passenger.user_id, capacity = 1, weight = weight)
+            for i in range(0,len(self.passengers),WORKERS): 
+                iter_threader = [threading.Thread(target=self.calc_edge, args=[driver,self.passengers[j]]) for j in range (i,min(i+WORKERS,len(self.passengers)))]
+                for t in iter_threader: #runs the task in threads
+                    t.start()
+                for t in iter_threader: #sync the threads before moving to the next iteration or exit the loop
+                    t.join()
+                cnt+=WORKERS
+        print("Finished edged between drivers and passengers")
+            
+    
 
     def add_edges_from_passengers_to_sink(self):
         for passenger in self.passengers:
@@ -96,7 +110,6 @@ class Cluster:
 
     def get_event_clusters(self):
         self.build_graph()
-        nx.nx_pydot.write_dot(self.graph, 'graph.dot')
         # Display the graph
         print("finished building graph")
         flow_dict = self.min_cost_max_flow()
@@ -121,21 +134,25 @@ class Cluster:
             return ZERO_WEIGHT
         return GENDER_WEIGHT
 
+
     def get_weight(self, driver, passenger):
+        bounding_box_weight = self.calc_bounding_box_weight(driver, passenger)
+        if bounding_box_weight != ZERO_WEIGHT:
+            return INF_WEIGHT
         distance_weight = self.calc_dist_weight(driver.pick_up_latitude, driver.pick_up_longtitude, passenger.pick_up_latitude, passenger.pick_up_longtitude)
         gender_weight = self.calc_gender_weight(driver.gender, passenger.gender)
         return int(distance_weight + gender_weight)
 
-    def calc_driver_boundingbox(driver):
-        x_left = min(driver.longitude,self.event.longitude) - BOUNDBOX_EPSILON
-        x_right = max(driver.longitude,self.event.longitude) + BOUNDBOX_EPSILON
-        y_low= min(driver.latitdude,self.event.latitdude) - BOUNDBOX_EPSILON
-        y_high= max(driver.latitdude,self.event.latitdude) + BOUNDBOX_EPSILON
+    def calc_driver_boundingbox(self,driver):
+        x_left = min(driver.pick_up_longtitude,self.event.longtitude) - BOUNDBOX_EPSILON
+        x_right = max(driver.pick_up_longtitude,self.event.longtitude) + BOUNDBOX_EPSILON
+        y_low= min(driver.pick_up_latitude,self.event.latitude) - BOUNDBOX_EPSILON
+        y_high= max(driver.pick_up_latitude,self.event.latitude) + BOUNDBOX_EPSILON
         return (x_left, x_right, y_low, y_high)
 
-def calc_bounding_box_weight(driver,passenger):
-    driver_bounding_box = calc_driver_boundingbox(self.event,driver)
-    if passenger.longitude > driver_bounding_box[0] and passenger.longitude <driver_bounding_box[1]:
-        if passenger.latitdude > driver_bounding_box[2] and passenger.latitdude <driver_bounding_box[3]:
-            return ZERO_WEIGHT
-    return INF_WEIGHT
+    def calc_bounding_box_weight(self,driver,passenger):
+        driver_bounding_box = self.calc_driver_boundingbox(driver)
+        if passenger.pick_up_longtitude > driver_bounding_box[0] and passenger.pick_up_longtitude <driver_bounding_box[1]:
+            if passenger.pick_up_latitude > driver_bounding_box[2] and passenger.pick_up_latitude <driver_bounding_box[3]:
+                return ZERO_WEIGHT
+        return INF_WEIGHT

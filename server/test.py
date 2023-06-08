@@ -15,7 +15,7 @@ def create_db(db, interactive=False):
             latitude=30,
         )
 
-        for i in range(100):
+        for i in range(20):
             user = User(
                 name=f'user{i}',
                 email=f'user{i}@gmail.com',
