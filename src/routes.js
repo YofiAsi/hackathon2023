@@ -1,5 +1,6 @@
 import Home from './components/Pages/Home'
-import DashboardLayout from './components/DashboardLayout'
+import JoinEvent from './components/Pages/JoinEvent'
+import DashboardLayout from './components/dashboard/DashboardLayout';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 
@@ -23,6 +24,10 @@ export default function Router() {
           <Route
             path="home"
             element={<Home />}
+          />
+          <Route
+            path='join_event'
+            element={<JoinEvent/>}
           />
         </Route>
       </Routes>

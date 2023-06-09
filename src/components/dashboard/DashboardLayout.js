@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { AppBar, Toolbar } from '@mui/material';
-import MainAppBar from './MainAppBar';
+import ResponsiveAppBar from './MainAppBar';
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -31,11 +31,9 @@ export default function DashboardLayout() {
 
   return (
     <StyledRoot>
-      <AppBar position="fixed">
-        <Toolbar>
-          <MainAppBar />
-        </Toolbar>
-      </AppBar>
+      
+      <ResponsiveAppBar />
+      
       <Main>
         <Outlet />
       </Main>
