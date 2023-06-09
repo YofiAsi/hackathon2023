@@ -24,27 +24,28 @@ def create_mock_db(db):
             db.session.add(user)
             db.session.commit()
 
-            if i % 2 == 0:
-                event.attendees.append(Attendee(
-                    user_id=user.id,
-                    is_driver=True,
-                    capacity=max(1, i%5),
-                    pick_up_latitude=user.latitude,
-                    pick_up_longtitude=user.longitude,
-                    gender=user.gender,
-                    price=0,
-                    assigned_passengers=[],
-                ))
-            else:
-                event.attendees.append(Attendee(
-                    user_id=user.id,
-                    is_driver=False,
-                    capacity=0,
-                    pick_up_latitude=user.latitude,
-                    pick_up_longtitude=user.longitude,
-                    gender=user.gender,
-                ))
-                event.attendees[-1].assigned_driver = event.attendees[0]
+            if i < 10:
+                if i % 2 == 0:
+                    event.attendees.append(Attendee(
+                        user_id=user.id,
+                        is_driver=True,
+                        capacity=max(1, i%5),
+                        pick_up_latitude=user.latitude,
+                        pick_up_longtitude=user.longitude,
+                        gender=user.gender,
+                        price=0,
+                        assigned_passengers=[],
+                    ))
+                else:
+                    event.attendees.append(Attendee(
+                        user_id=user.id,
+                        is_driver=False,
+                        capacity=0,
+                        pick_up_latitude=user.latitude,
+                        pick_up_longtitude=user.longitude,
+                        gender=user.gender,
+                    ))
+                    event.attendees[-1].assigned_driver = event.attendees[0]
 
         db.session.add(event)
         db.session.commit()

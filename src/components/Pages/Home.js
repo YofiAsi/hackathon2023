@@ -9,7 +9,7 @@ import { alpha, styled } from '@mui/system';
 import EventCard from '../homePage/EventCard';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 
 // ----------------------------------------------------------------------
@@ -139,6 +139,46 @@ export default function Home() {
     });
     setFilteredEvents(filtered);
   };
+
+
+  // const [attendEvent, { data, loading, error }] = useMutation(gql`
+  //   mutation AttendEvent(
+  //     $userId: Int!
+  //     $eventId: Int!
+  //     $isDriver: Boolean!
+  //     $capacity: Int!
+  //     $pickUpLongtitude: Float!
+  //     $pickUpLatitude: Float!
+  //     $gender: Int!
+  //   ) {
+  //     attendEvent(
+  //       userId: $userId
+  //       eventId: $eventId
+  //       isDriver: $isDriver
+  //       capacity: $capacity
+  //       pickUpLongtitude: $pickUpLongtitude
+  //       pickUpLatitude: $pickUpLatitude
+  //       gender: $gender
+  //     ) {
+  //       attendee {
+  //         eventId
+  //       }
+  //     }
+  //   }
+  // `);
+
+  // return <button onClick={() =>
+  //   attendEvent({ variables: {
+  //     eventId: 1,
+  //     userId: 12,
+  //     isDriver: false,
+  //     capacity: 0,
+  //     pickUpLongtitude: 30,
+  //     pickUpLatitude: 30,
+  //     gender: 1,
+  //   } })
+  // }>Attend Event</button>;
+
 
   return (
       <Container>
