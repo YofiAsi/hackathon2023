@@ -57,12 +57,12 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} href="/"/> */}
-          <DriveEtaIcon sx={{marginRight: 2}}/>
+          <DriveEtaIcon sx={{marginRight: 2}} href='/dashboard/home'/>
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href='/dashboard/home'
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -77,12 +77,12 @@ function ResponsiveAppBar() {
           </Typography>
           
           {/* if the screen is small: */}
-          <Icon src='./src/components/dashboard/MainAppBar.js' sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} href="/"/>
+          <Icon src='./src/components/dashboard/MainAppBar.js' sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} href='/dashboard/home'/>
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href='/dashboard/home'
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

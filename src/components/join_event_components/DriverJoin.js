@@ -28,6 +28,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import { GoogleMap, LoadScriptNext, Marker } from '@react-google-maps/api';
 import MovingIcon from '@mui/icons-material/Moving';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { useNavigate } from 'react-router-dom';
+
 
 const DriverJoin = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -39,6 +41,8 @@ const DriverJoin = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [locationMap, setLocationMap] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -224,7 +228,7 @@ const DriverJoin = () => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button onClick={() => (window.location.href = '/')}>Go Home</Button>
+            <Button onClick={() => (window.location.href = '/dashboard/home')}>Go Home</Button>
           </CardActions>
         </Card>
       </Dialog>
