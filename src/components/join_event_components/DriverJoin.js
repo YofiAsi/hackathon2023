@@ -12,7 +12,10 @@ import {
   Stack,
   IconButton,
   Card,
-  CardContent
+  CardContent,
+  Dialog,
+  DialogTitle,
+  CardActions
 } from '@mui/material';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './DriverJoin.css';
@@ -35,6 +38,7 @@ const DriverJoin = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationMap, setLocationMap] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -85,26 +89,40 @@ const DriverJoin = () => {
   };
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep(prevStep => prevStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+    setActiveStep(prevStep => prevStep - 1);
   };
 
   const handleSubmitClick = () => {
     setButtonLoading(true);
-  } ;
+    setTimeout(() => {
+      setButtonLoading(false);
+      setDialogOpen(true);
+    }, 1000);
+  };
 
-  const getStepContent = (step) => {
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const getStepContent = step => {
     switch (step) {
       case 0:
         return (
           <CSSTransition key={0} classNames="slide-left" timeout={300}>
             <Box display="flex" flexDirection="column" alignItems="center">
-            <Stack spacing={4} sx={{justifyContent:'center'}}>
-                <div >{passengerCount < 10 ? <TimeToLeaveIcon style={{ fontSize: '150px', transform: `scale(${iconSize})` }}/> :
-                <AirportShuttleIcon sx={{fontSize: '150px'}}/>}
+              <Stack spacing={4} sx={{ justifyContent: 'center' }}>
+                <div>
+                  {passengerCount < 10 ? (
+                    <TimeToLeaveIcon
+                      style={{ fontSize: '150px', transform: `scale(${iconSize})` }}
+                    />
+                  ) : (
+                    <AirportShuttleIcon sx={{ fontSize: '150px' }} />
+                  )}
                 </div>
                 <Typography variant="h6">How many passengers can join you?</Typography>
                 <Slider
@@ -128,36 +146,34 @@ const DriverJoin = () => {
               <Stack spacing={2}>
                 <Card>
                   <LoadScriptNext googleMapsApiKey="AIzaSyDm2WAYdOWzrwap1RBCocsBZi3fVfJWxKU">
-                      <GoogleMap
+                    <GoogleMap
                       mapContainerStyle={{ width: '100%', height: '500px' }}
                       center={userLocation}
                       zoom={17}
                       onClick={handleMapClick}
-                      >
-                      {selectedLocation && (
-                          <Marker position={selectedLocation} />
-                      )}
-                      </GoogleMap>
+                    >
+                      {selectedLocation && <Marker position={selectedLocation} />}
+                    </GoogleMap>
                   </LoadScriptNext>
                   <CardContent>
                     <Stack spacing={2}>
                       <div>{locationMap ? locationMap.address : null}</div>
                       <div>
-                      <LoadingButton
-                        onClick={handleSubmitClick}
-                        endIcon={<MovingIcon />}
-                        disabled={locationMap ? false : true}
-                        loading={buttonLoading}
-                        loadingPosition="end"
-                        variant="contained"
-                        sx={{
-                          backgroundColor: '#4CAF50', // Change the background color to #4CAF50
-                          margin: '0 auto',
-                          width: 'fit-content'
-                        }}
-                      >
-                        {buttonLoading ? ":)" : "Let's Go"}
-                      </LoadingButton>
+                        <LoadingButton
+                          onClick={handleSubmitClick}
+                          endIcon={<MovingIcon />}
+                          disabled={locationMap ? false : true}
+                          loading={buttonLoading}
+                          loadingPosition="end"
+                          variant="contained"
+                          sx={{
+                            backgroundColor: '#4CAF50',
+                            margin: '0 auto',
+                            width: 'fit-content'
+                          }}
+                        >
+                          {buttonLoading ? ':)' : "Let's Go"}
+                        </LoadingButton>
                       </div>
                     </Stack>
                   </CardContent>
@@ -175,8 +191,10 @@ const DriverJoin = () => {
   const iconSize = 0.25 + passengerCount * 0.075; // Define the icon size based on passenger count
 
   return (
-    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', paddingTop: 0, justifyContent:'space-between' }}>
-      <Stepper nonLinear activeStep={activeStep} sx={{display: 'flex', marginBottom: 2}}>
+    <Container
+      sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', paddingTop: 0, justifyContent: 'space-between' }}
+    >
+      <Stepper nonLinear activeStep={activeStep} sx={{ display: 'flex', marginBottom: 2 }}>
         <Step>
           <StepLabel>Car</StepLabel>
         </Step>
@@ -185,18 +203,31 @@ const DriverJoin = () => {
         </Step>
       </Stepper>
 
-      <div style={{width: '100%'}}>
-          <TransitionGroup>{getStepContent(activeStep)}</TransitionGroup>
+      <div style={{ width: '100%' }}>
+        <TransitionGroup>{getStepContent(activeStep)}</TransitionGroup>
       </div>
 
-      <IconButton onClick={activeStep === 0 ? () => {handleNext(); setLocationMap(null); setSelectedLocation(null);} : handleBack}>
-        {activeStep ?
-          <ArrowBackIosNewIcon sx={{fontSize: '50px'}}/>
-          :
-          <ArrowForwardIosIcon sx={{fontSize: '50px'}}/>
-        }
+      <IconButton onClick={activeStep === 0 ? () => { handleNext(); setLocationMap(null); setSelectedLocation(null); } : handleBack}>
+        {activeStep ? (
+          <ArrowBackIosNewIcon sx={{ fontSize: '50px' }} />
+        ) : (
+          <ArrowForwardIosIcon sx={{ fontSize: '50px' }} />
+        )}
       </IconButton>
 
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Your in!</DialogTitle>
+        <Card>
+          <CardContent>
+            <Typography variant="body1">
+              A day before the event we will match you with other passengers
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button onClick={() => (window.location.href = '/')}>Go Home</Button>
+          </CardActions>
+        </Card>
+      </Dialog>
     </Container>
   );
 };

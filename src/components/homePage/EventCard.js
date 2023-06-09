@@ -55,6 +55,7 @@ const StyledCover = styled('img')({
 });
 
 const EventCard = React.forwardRef(({ event, eventId, color , timeout}, ref) => {
+
   const { name, place, time, pic} = event;
   const index = 1;
   const latestPostLarge = index === 0;

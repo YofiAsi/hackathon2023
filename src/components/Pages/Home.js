@@ -46,6 +46,26 @@ const events = {
     time: "1st of August, 20:30",
     pic: "https://www.israelhayom.com/wp-content/uploads/2022/02/15840314592828_b.jpg"
   },
+
+  3: {
+    name: "Bruno Mars",
+    place: "Yarkon Park, TLV",
+    time: "20th of October",
+    pic: '/bruno.jpg'
+  },
+
+  4: {
+    name: "Shahar Hasson",
+    place: "Shuni, Binyamina",
+    time: "3rd of November",
+    pic: "/shahar.jpg",
+  },
+
+  5: {
+    name: "Mac Ayres",
+    place: "Barbi, TLV",
+    
+  }
 };
 
 
