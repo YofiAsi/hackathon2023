@@ -12,7 +12,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client
 // ----------------------------------------------------------------------
 
 const client = new ApolloClient({
-  uri: 'https://snirbroshitau-didactic-palm-tree-74jw5j9p9x9fwqpv-5000.preview.app.github.dev/graphql',
+  uri: '/graphql',
   cache: new InMemoryCache(),
 });
 

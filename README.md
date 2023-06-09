@@ -19,5 +19,5 @@ python -m venv .venv
 pip install -r ./server/requirements-lock.txt
 
 # start server
-python -m server.app start
+python -m server.app start --production
 ```
