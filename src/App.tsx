@@ -7,7 +7,7 @@ import ThemeProvider from './theme';
 // components
 // import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 // ----------------------------------------------------------------------
 
