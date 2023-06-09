@@ -9,6 +9,6 @@ npm start
 ## Backend
 
 ```sh
-pip install -r ./server/requirements.txt
+pip install -r ./server/requirements-lock.txt
 python -m server.app start
 ```
