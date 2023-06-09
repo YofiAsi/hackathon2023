@@ -1,5 +1,5 @@
 import IPython
-from flask import Flask
+from flask import Flask, redirect, url_for
 import argparse
 from flask_graphql import GraphQLView
 from flask_apscheduler import APScheduler
@@ -30,8 +30,14 @@ def process_events():
     with app.app_context():
         handle_event()
 
-app.register_blueprint(locationSuccess.bp, url_prefix="/locationSuccess")
+
+@app.route("/")
+def crust():
+    return redirect(url_for("graphql"))
+
 app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
+app.register_blueprint(locationSuccess.bp, url_prefix="/locationSuccess")
+
 
 def main():
     parser = argparse.ArgumentParser()
