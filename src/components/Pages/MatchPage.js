@@ -64,6 +64,9 @@ export default function MatchPage() {
             <Button size='large' variant="outlined">
               Agree
             </Button>
+            <Typography>
+              {"(This is just an example of the page and the user wont be immediately transferred here)"}
+            </Typography>
         </Stack>
     </Container>
   )

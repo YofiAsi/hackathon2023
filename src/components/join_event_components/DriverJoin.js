@@ -228,7 +228,7 @@ const DriverJoin = () => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button onClick={() => (window.location.href = '/dashboard/home')}>Go Home</Button>
+            <Button onClick={() => (window.location.href = '/dashboard/match')}>Go Home</Button>
           </CardActions>
         </Card>
       </Dialog>
