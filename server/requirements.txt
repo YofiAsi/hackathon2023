@@ -1,3 +1,4 @@
+graphql-server-core>=2.0.0
 flask
 Flask-SQLAlchemy
 networkx

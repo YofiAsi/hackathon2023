@@ -43,7 +43,7 @@ def process_events():
 def frontend_proxy(path):
     try:
         proxy_response = requests.get(FRONTEND_SERVER_HOST + path, headers=request.headers)
-        flask_response = Response(proxy_response.raw, mimetype=proxy_response.headers["Content-Type"])
+        flask_response = Response(proxy_response.content, mimetype=proxy_response.headers["Content-Type"])
         flask_response.headers["Access-Control-Allow-Origin"] = "*"
         return flask_response
     except Exception as e:
