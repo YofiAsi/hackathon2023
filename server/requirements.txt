@@ -10,3 +10,4 @@ matplotlib
 IPython
 pydot
 pandas
+Flask-APScheduler

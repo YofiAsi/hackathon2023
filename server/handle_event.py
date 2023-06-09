@@ -9,7 +9,7 @@ from sqlalchemy import and_
 # Create a session
 
 def handle_event():
-# Calculate the current time and the time 36 hours from now
+    # Calculate the current time and the time 36 hours from now
     current_time = datetime.now()
 
     end_time = current_time + timedelta(hours = 24)
