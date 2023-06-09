@@ -1,12 +1,14 @@
 import React from 'react';
-import { Grid, Button, Box, Skeleton, Paper, Container, Grow, TextField, Stack, Typography, Autocomplete } from '@mui/material';
+import { Grid, Button, Box, Skeleton, Paper, Container, Grow, TextField, Stack, Typography, Autocomplete, SpeedDial } from '@mui/material';
 // import { io } from 'socket.io-client';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { random, clamp } from 'lodash';
 import { alpha, styled } from '@mui/system';
 // import useAuthentication from "../hooks/useAuthentication";
-import RoomCard from '../homePage/RoomCard';
+import EventCard from '../homePage/EventCard';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
 
 // ----------------------------------------------------------------------
 
@@ -28,23 +30,24 @@ const events = {
     name: "Tuna & Ravid",
     place: "Live Park",
     time: "1st of July, 20:00",
-    pic: "tuna",
+    pic: "https://www.tmisrael.co.il/static/images/live/event/eventimages/MRL22_610x336_2023-03-20_201827.jpg",
   },
 
   1: {
     name: "Macabi Haifa vs. Macabi TLV",
     place: "Blumfield, TLV",
     time: "22nd of July, 19:00",
-    pic: "football"
+    pic: "https://icdn.psgtalk.com/wp-content/uploads/2022/09/fbl-eur-c1-maccabi-haifa-psg.jpg"
   },
 
   2: {
     name: "Noa Kirel",
     place: "Barbi, TLV",
     time: "1st of August, 20:30",
-    pic: "noa",
+    pic: "https://www.israelhayom.com/wp-content/uploads/2022/02/15840314592828_b.jpg"
   },
-}
+};
+
 
 
 export default function Home() {
@@ -62,9 +65,9 @@ export default function Home() {
   ];
   const getRandomColor = () => alpha(colors[random(0, colors.length - 1)], 0.72);  
 
-  const [roomsData, setRoomsData] = useState(false);
+  const [eventsData, setEventsData] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredRooms, setFilteredRooms] = useState(false);
+  const [filteredEvents, setFilteredEvents] = useState(false);
   const [showCreateRoomCard, setShowCreateRoomCard] = useState(false);
   const [showSignupCard, setShowSignupCard] = useState(false);
   const [showLoginCard, setShowLoginCard] = useState(false);
@@ -82,6 +85,18 @@ export default function Home() {
   //     setShowCreateRoomCard(false)
   //   }
   // }
+  useEffect(() => {
+    const mappedEvents = new Map(Object.entries(events));
+    mappedEvents.forEach((data) => {
+      data.color = getRandomColor(); // Add random color to each room
+    });
+    setEventsData(mappedEvents);
+  }, []);
+
+  useEffect(() => {
+    filterEvents('');
+  }, [eventsData]);
+
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -110,21 +125,20 @@ export default function Home() {
 
   // useEffect(() => {
   //   console.log(roomsData);
-  //   filterRooms('');
+  //   filterEvents('');
   // }, [roomsData]);
 
   // useEffect(() => {
   //   setShowLoginCard(!isAuthenticated);
   // }, [isAuthenticated]);
 
-  const filterRooms = (query) => {
-    const filtered = Array.from(roomsData).filter(([roomId, data]) => {
-      const tags = data.tags || [];
+  const filterEvents = (query) => {
+    const filtered = Array.from(eventsData).filter(([eventId, data]) => {
       const name = data.name || '';
       const lowerQuery = query.toLowerCase();
-      return tags.some((tag) => tag.toLowerCase().includes(lowerQuery)) || name.toLowerCase().includes(lowerQuery);
+      return name.toLowerCase().includes(lowerQuery);
     });
-    setFilteredRooms(filtered);
+    setFilteredEvents(filtered);
   };
 
   return (
@@ -138,28 +152,27 @@ export default function Home() {
                 onChange={(e) => {
                   const query = e.target.value;
                   setSearchQuery(query);
-                  filterRooms(query);
+                  filterEvents(query);
                 }}
                 />
               
             </Stack>
-            {roomsData ? (
+            {eventsData ? (
               <CardContainer>
                 <Grid container justifyContent="center">
-                  {filteredRooms.length > 0 ? (
-                    filteredRooms.map(([roomId, data], index) => (
-                      <RoomCard
+                  {filteredEvents.length > 0 ? (
+                    filteredEvents.map(([roomId, data], index) => (
+                      <EventCard
                         key={`${roomId}-${searchQuery}`}
-                        room={data}
-                        roomId={roomId}
+                        event={data}
+                        eventId={roomId}
                         color={data.color}
-                        timeout={(index + 1) * 250}
-                        pictureId={data.pictureId}
+                        timeout={(index + 1) * 250}              
                       />
                     ))
                   ) : (
                     <Typography variant="body1" sx={{ fontSize: '1rem', color: 'gray', marginTop: '100px' }}>
-                      There are no rooms, maybe you should make one?
+                      There are no events, maybe you should add one?
                     </Typography>
                   
                   )}
