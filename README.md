@@ -2,6 +2,7 @@
 ## Frontend
 
 ```sh
+npm install
 npm start
 ```
 
@@ -9,5 +10,5 @@ npm start
 
 ```sh
 pip install -r ./server/requirements.txt
-python -m server.app
+python -m server.app start
 ```
