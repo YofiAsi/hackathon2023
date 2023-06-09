@@ -9,3 +9,4 @@ IPython
 matplotlib
 IPython
 pydot
+pandas
