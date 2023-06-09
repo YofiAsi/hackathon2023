@@ -22,6 +22,6 @@ class Attendee(db.Model):
     pick_up_longtitude = db.Column(db.Float)
     pick_up_latitude = db.Column(db.Float)
     gender = db.Column(db.Integer)
-
-    assigned_driver_id = db.Column(db.Integer, db.ForeignKey("attendee.user_id"), primary_key=True, nullable=True)
+    price = db.Column(db.Integer)
+    assigned_driver_id = db.Column(db.Integer, db.ForeignKey("attendee.user_id"),  nullable=True)
     assigned_passengers = db.relationship("Attendee", foreign_keys=[assigned_driver_id], backref=db.backref("assigned_driver", remote_side=[user_id]))

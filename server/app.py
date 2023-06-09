@@ -46,13 +46,13 @@ def test():
 
 
 
-from flask_graphql import GraphQLView
-from .graphql import schema
-app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
+#from flask_graphql import GraphQLView
+#from .graphql import schema
+#app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
 
 
 DEBUG = True
-HANDLE_EVENT = False
+HANDLE_EVENT = True
 if __name__ == "__main__":
     init_db(app, DEBUG)
 

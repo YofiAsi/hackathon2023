@@ -18,14 +18,21 @@ def handle_event():
     # Query events that occur within the specified time range
     events = db.session.query(Event).filter(and_( Event.time <= end_time, Event.time >= current_time)).all()
     # Print the events
-    print("aaaaaaaaaaaaaaaaaaaa")
     for event in events:
-        print("events here")
         event_users = event.attendees # TODO get users from event
         event_cluster = Cluster(event_users, event)
-        driver_passenger_pairs = event_cluster.get_event_clusters()
-        print(driver_passenger_pairs)
-        
+        driver_passenger_price = event_cluster.get_event_clusters()
+        id_to_user = {attendee.user_id: attendee for attendee in event_users}
+        for driver_id, passenger_id, price in driver_passenger_price:
+            id_to_user[driver_id].assigned_passengers.append(id_to_user[passenger_id])
+            id_to_user[driver_id].price = price
+            id_to_user[passenger_id].assigned_driver = id_to_user[driver_id]
+            id_to_user[passenger_id].price = price
+            
+    db.session.add(event)
+    db.session.commit()
+
+
 
 
 

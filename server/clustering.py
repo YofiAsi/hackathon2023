@@ -23,6 +23,7 @@ WALK_PACE = 85
 BOUNDBOX_EPSILON = 1/111
 INF_WEIGHT = math.inf
 WORKERS=100
+COST_PER_MINUTE = 0.35
 requests.packages.urllib3.disable_warnings() 
 
 class Cluster:
@@ -32,7 +33,7 @@ class Cluster:
         self.drivers = []
         self.passengers = []
         self.event = event
-
+        self.price_dict = {}
     def get_drivers(self):
         self.drivers = [user for user in self.users if user.is_driver]
 
@@ -55,7 +56,6 @@ class Cluster:
     def add_edges_from_source_to_drivers(self):
         for driver in self.drivers:
             self.graph.add_edge(SOURCE, driver.user_id, capacity=driver.capacity, weight=0)
-        print("finished adding source to drivers")
     
     def calc_edge(self,driver,passenger):
             weight = self.get_weight(driver, passenger) 
@@ -74,7 +74,6 @@ class Cluster:
                 for t in iter_threader: #sync the threads before moving to the next iteration or exit the loop
                     t.join()
                 cnt+=WORKERS
-        print("Finished edged between drivers and passengers")
             
     
 
@@ -95,7 +94,6 @@ class Cluster:
 
     def min_cost_max_flow(self):
         flow_dict = nx.max_flow_min_cost(self.graph, SOURCE, SINK)
-        print("finished min cost max flow")
         return flow_dict
     
     def get_driver_passenger_pairs(self, flow_dict):
@@ -105,17 +103,26 @@ class Cluster:
             for passenger_id in flow_dict[driver_id]:
                 if passenger_id == SOURCE or passenger_id == SINK: continue
                 if flow_dict[driver_id][passenger_id] > 0:
-                    driver_passenger_pairs.append((driver_id, passenger_id))
+                    driver_passenger_pairs.append((driver_id, passenger_id,int(self.price_dict[driver_id])))
         return driver_passenger_pairs
+    
+    def get_prices(self):
+        for driver in self.drivers:
+            self.price_dict[driver.user_id] = self.calc_drive_price(driver.pick_up_latitude , driver.pick_up_longtitude)
+
+    def calc_drive_price(self, driver_latitude: float, driver_longitude: float):
+        url = f"https://api.mapbox.com/directions/v5/mapbox/driving/{driver_longitude},{driver_latitude};{self.event.longtitude},{self.event.latitude}?alternatives=true&access_token={ACCESS_TOKEN}"
+        response = requests.get(url, verify=False )
+        data = response.json()
+        duration = data["routes"][0]["duration"] / MINUTES
+        return duration*COST_PER_MINUTE
 
     def get_event_clusters(self):
         self.build_graph()
         # Display the graph
-        print("finished building graph")
+        self.get_prices()
         flow_dict = self.min_cost_max_flow()
-        print("finished min cost max flow")
         driver_passenger_pairs = self.get_driver_passenger_pairs(flow_dict)
-        print("finished getting driver passenger pairs")
         return driver_passenger_pairs
 
 

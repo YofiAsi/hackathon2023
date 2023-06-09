@@ -11,8 +11,8 @@ def create_db(db, interactive=False):
         event = Event(
             name='game',
             time=datetime.now()+timedelta(hours=24),
-            longtitude=30,
-            latitude=30,
+            longtitude=37,
+            latitude=37,
         )
 
         for i in range(20):
@@ -34,6 +34,8 @@ def create_db(db, interactive=False):
                     pick_up_latitude=user.latitude,
                     pick_up_longtitude=user.longitude,
                     gender=user.gender,
+                    price=0,
+                    assigned_passengers=[],
                 ))
             else:
                 event.attendees.append(Attendee(
@@ -49,7 +51,6 @@ def create_db(db, interactive=False):
         db.session.add(event)
         db.session.commit()
 
-        print('created event')
 
     if interactive:
         IPython.embed()
