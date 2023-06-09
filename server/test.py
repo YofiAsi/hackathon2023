@@ -19,8 +19,8 @@ def create_db(db, interactive=False):
             user = User(
                 name=f'user{i}',
                 email=f'user{i}@gmail.com',
-                latitude=37+i/1000,
-                longitude=37+i/1000,
+                latitude=37+(i+1)/1000,
+                longitude=37+(i+1)/1000,
                 gender=i%2,
             )
             db.session.add(user)
