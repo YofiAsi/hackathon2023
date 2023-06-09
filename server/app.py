@@ -1,64 +1,65 @@
-from flask import Flask, request
-from .db import db, init_db
-from .models import User
+import IPython
+from flask import Flask
+import argparse
+from flask_graphql import GraphQLView
+from flask_apscheduler import APScheduler
+from pathlib import Path
+from .graphql import schema
+from .db import db
+from .handle_event import handle_event
+from .test import create_mock_db
 from . import locationSuccess
+
+this_folder = Path(__file__).parent
+SQLITE_DATABASE_PATH = this_folder / "../project.db"
+
+class Config:
+    SCHEDULER_API_ENABLED = True
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{SQLITE_DATABASE_PATH}"
+
+
 app = Flask(__name__)
+app.config.from_object(Config())
 
-SUCCESS = "Okay"
+scheduler = APScheduler()
+scheduler.init_app(app)
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+@scheduler.task("cron", id="process_events", minute="*")
+def process_events():
+    print("~~~ Processing events ~~~")
+    with app.app_context():
+        handle_event()
 
 app.register_blueprint(locationSuccess.bp, url_prefix="/locationSuccess")
+app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
 
-@app.route("/create", methods=["POST"])
-def user_create():
-    user = User(
-        username=request.args["name"],
-        email=request.args["email"],
-        gender=request.args["gender"],
-    )
-    db.session.add(user)
-    db.session.commit()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command", choices=["start", "process-events", "test"])
+    parser.add_argument("--production", action="store_false", dest="debug")
+    args = parser.parse_args()
 
-    return SUCCESS
+    db.init_app(app)
 
-@app.route("/user/<int:id>")
-def user_detail(_id):
-    user = db.get_or_404(User, _id)
-    return user
+    with app.app_context():
+        # reset DB and create mock if in debug
+        if args.debug:
+            db.drop_all()
 
-@app.route("/user/<int:id>/delete", methods=["GET", "POST"])
-def user_delete(id):
-    user = db.get_or_404(User, id)
+        db.create_all()
 
-    if request.method == "POST" or request.method == "GET":
-        db.session.delete(user)
-        db.session.commit()
+        if args.debug:
+            create_mock_db(db)
 
-    return SUCCESS
-
-@app.route("/test")
-def test():
-    users = db.session.execute(db.select(User).order_by(User.name)).scalars()
-    return [user.id for user in users]
-
-
-
-#from flask_graphql import GraphQLView
-#from .graphql import schema
-#app.add_url_rule("/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True))
-
-
-DEBUG = True
-HANDLE_EVENT = True
-if __name__ == "__main__":
-    init_db(app, DEBUG)
-
-    if HANDLE_EVENT:
-        from .handle_event import handle_event
+    if args.command == "start":
+        scheduler.start()
+        app.run(debug=args.debug)
+    elif args.command == "process-events":
+        process_events()
+    elif args.command == "test":
+        # open a console with a db connection
         with app.app_context():
-            handle_event()
-    else:
-        app.run(debug=DEBUG)
+            IPython.embed()
+
+if __name__ == "__main__":
+    main()
