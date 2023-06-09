@@ -1,11 +1,7 @@
 from .models.User import User
 import networkx as nx
 import requests
-import json
-import requests
-from .db import db
 from .models import Event
-from .app import app
 from sqlalchemy import and_
 import math
 from matplotlib import pyplot as plt

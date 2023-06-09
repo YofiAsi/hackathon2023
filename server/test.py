@@ -1,10 +1,8 @@
-from . import clustering
 from .models.User import User
 from .models.Event import Event, Attendee
-import IPython
-from datetime import datetime , timedelta
+from datetime import datetime, timedelta
 
-def create_db(db, interactive=False):
+def create_mock_db(db):
     events = list(db.session.execute(db.select(Event)).scalars())
 
     if not events:
@@ -19,8 +17,8 @@ def create_db(db, interactive=False):
             user = User(
                 name=f'user{i}',
                 email=f'user{i}@gmail.com',
-                latitude=37+i/1000,
-                longitude=37+i/1000,
+                latitude=37+(i+1)/1000,
+                longitude=37+(i+1)/1000,
                 gender=i%2,
             )
             db.session.add(user)
@@ -50,15 +48,3 @@ def create_db(db, interactive=False):
 
         db.session.add(event)
         db.session.commit()
-
-
-    if interactive:
-        IPython.embed()
-
-
-if __name__ == '__main__':
-    from .db import db, init_db
-    from .app import app
-    init_db(app, debug=False)
-    with app.app_context():
-        create_db(db, interactive=True)

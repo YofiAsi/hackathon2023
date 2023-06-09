@@ -54,8 +54,8 @@ const StyledCover = styled('img')({
   position: 'absolute',
 });
 
-const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, ref) => {
-  const { name, tags, time_to_start, spectators, teams, room_size, users_list } = room;
+const EventCard = React.forwardRef(({ event, eventId, color , timeout}, ref) => {
+  const { name, place, time, pic} = event;
   const index = 1;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
@@ -104,7 +104,7 @@ const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, 
         <Card sx={{ position: 'relative', bgcolor: color }} ref={ref}>
           <CardActionArea
             onClick={() => {
-              navigate(`/room/${roomId}`);
+              navigate(`/dashboard/event/${eventId}`);
             }}
           >
             <StyledCardMedia
@@ -116,7 +116,7 @@ const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, 
                   width: '100%',
                   height: '100%',
                   position: 'absolute',
-                  backgroundColor: pictureId === -1 ? '' : 'rgba(0, 0, 0, 0.5)', // Semi-transparent overlay color
+                  backgroundColor: pic === -1 ? '' : 'rgba(0, 0, 0, 0.5)', // Semi-transparent overlay color
                 },
               }}
             >
@@ -132,23 +132,10 @@ const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, 
                   color: 'background.paper',
                 }}
               />
-              {/* <StyledAvatar
-            // alt={moderator}
-            // src={}
-            sx={{
-              ...((latestPostLarge || latestPost) && {
-                zIndex: 9,
-                top: 24,
-                left: 24,
-                width: 40,
-                height: 40,
-              }),
-            }}
-          /> */}
 
-              {pictureId !== -1 && !loading ? (
-                <StyledCover alt={name} src={photo.src.original} />
-              ) : (
+              {pic !== -1 ? (
+                <StyledCover alt={name} src={pic} />
+        ) : (
                 null
               )}
             </StyledCardMedia>
@@ -164,21 +151,6 @@ const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, 
               }}
             >
               <Stack spacing={1} sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Stack direction="row" spacing={1}>
-                  <PeopleIcon sx={{ color: 'white' }} />
-                  <Typography
-                    gutterBottom
-                    variant="caption"
-                    sx={{
-                      color: 'white',
-                      display: 'block',
-                      justifyContent: 'flex-end',
-                      fontSize: '0.8rem',
-                    }}
-                  >
-                    {Object.keys(users_list).length} / {room_size}
-                  </Typography>
-                </Stack>
                 <Box sx={{ height: '40%', overflow: 'hidden' }}>
                   <Typography
                     color="inherit"
@@ -197,33 +169,38 @@ const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, 
                   </Typography>
                 </Box>
                 <Box sx={{ height: '30%', overflow: 'hidden' }}>
-                  {tags.map((tag, index) => (
-                    <Typography
-                      key={index}
-                      variant="caption"
-                      sx={{
-                        color: 'white',
-                        display: 'inline-block',
-                        marginRight: '0.5rem',
-                        fontSize: '0.9rem',
-                      }}
-                    >
-                      #{tag}
-                    </Typography>
-                  ))}
-                </Box>
-                <Box sx={{ height: '20%', overflow: 'hidden' }}>
-                  <Typography
-                    gutterBottom
-                    variant="caption"
+                <Typography
+                    color="inherit"
+                    variant="subtitle2"
+                    underline="hover"
                     sx={{
-                      color: 'white',
-                      display: 'block',
-                      fontSize: '0.9rem',
+                      ...((latestPostLarge || latestPost) && {
+                        color: 'common.white',
+                      }),
+                      typography: 'h5',
+                      height: 1,
+                      fontSize: '1.2rem',
                     }}
                   >
-                    {/* <MyTimer expiryTimestamp={time} /> */}
-                  </Typography>
+                      {place}
+                    </Typography>
+                </Box>
+                <Box sx={{ height: '30%', overflow: 'hidden' }}>
+                <Typography
+                    color="inherit"
+                    variant="subtitle2"
+                    underline="hover"
+                    sx={{
+                      ...((latestPostLarge || latestPost) && {
+                        color: 'common.white',
+                      }),
+                      typography: 'h5',
+                      height: 1,
+                      fontSize: '1.2rem',
+                    }}
+                  >
+                      {time}
+                    </Typography>
                 </Box>
               </Stack>
             </CardContent>
@@ -234,9 +211,9 @@ const RoomCard = React.forwardRef(({ room, roomId, color, timeout, pictureId }, 
   );
 });
 
-RoomCard.propTypes = {
-  room: PropTypes.object.isRequired,
+EventCard.propTypes = {
+  event: PropTypes.object.isRequired,
   index: PropTypes.number,
 };
 
-export default RoomCard;
+export default EventCard;

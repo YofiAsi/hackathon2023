@@ -2,12 +2,22 @@
 ## Frontend
 
 ```sh
-npm start
+npm install -g yarn
+yarn
+yarn start
 ```
 
 ## Backend
 
 ```sh
-pip install -r ./server/requirements.txt
-python -m server.app
+# virtual env
+python -m venv .venv
+. .venv/bin/activate # on Linux
+.venv/Scripts/activate # on Windows
+
+# requirements
+pip install -r ./server/requirements-lock.txt
+
+# start server
+python -m server.app start
 ```
