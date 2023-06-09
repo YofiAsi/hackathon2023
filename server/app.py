@@ -1,5 +1,5 @@
 import IPython
-from flask import Flask, Response
+from flask import Flask, Response, request
 import argparse
 from flask_graphql import GraphQLView
 from flask_apscheduler import APScheduler
@@ -15,7 +15,7 @@ from . import locationSuccess
 
 this_folder = Path(__file__).parent
 SQLITE_DATABASE_PATH = this_folder / "../project.db"
-FRONTEND_SERVER_HOST = "localhost:3000"
+FRONTEND_SERVER_HOST = "http://localhost:3000/"
 FRONTEND_BUILD_FOLDER = this_folder / "../build/"
 
 class Config:
@@ -42,13 +42,8 @@ def process_events():
 @app.route("/<path:path>")
 def frontend_proxy(path):
     try:
-        connection = http.client.HTTPConnection(FRONTEND_SERVER_HOST)
-        connection.request("GET", "/" + path)
-        response = connection.getresponse()
-        data = response.read()
-        connection.close()
-        content = data.decode('utf-8')
-        flask_response = Response(content, mimetype=response.headers["Content-Type"])
+        proxy_response = requests.get(FRONTEND_SERVER_HOST + path, headers=request.headers)
+        flask_response = Response(proxy_response.raw, mimetype=proxy_response.headers["Content-Type"])
         flask_response.headers["Access-Control-Allow-Origin"] = "*"
         return flask_response
     except Exception as e:
