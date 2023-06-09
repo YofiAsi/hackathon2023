@@ -64,7 +64,8 @@ const events = {
   5: {
     name: "Mac Ayres",
     place: "Barbi, TLV",
-    
+    time: "13th of November",
+    pic: "/mac.jpg"
   }
 };
 
