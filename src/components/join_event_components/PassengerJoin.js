@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomizedProgressBars from './BorderLinearProgress';
 import {
   GoogleMap,
@@ -30,6 +31,7 @@ export default function PassengerJoin() {
   const [userLocation, setUserLocation] = useState(null);
   const [locationMap, setLocationMap] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false); // State variable for dialog visibility
+  const navigate = useNavigate();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -152,7 +154,7 @@ export default function PassengerJoin() {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button onClick={() => (window.location.href = '/')}>Go Home</Button>
+            <Button onClick={() => (window.location.href = '/dashboard/home')}>Go Home</Button>
           </CardActions>
         </Card>
       </Dialog>

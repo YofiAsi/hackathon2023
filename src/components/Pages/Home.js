@@ -9,6 +9,8 @@ import { alpha, styled } from '@mui/system';
 import EventCard from '../homePage/EventCard';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
+import { gql, useQuery } from '@apollo/client';
+
 
 // ----------------------------------------------------------------------
 
@@ -94,6 +96,16 @@ export default function Home() {
   const [showLoginCard, setShowLoginCard] = useState(false);
   const navigate = useNavigate();
 
+  // this is just to show we can connect to the server
+  const { loading, error, data } = useQuery(gql`
+    query {
+      events {
+        id
+        name
+      }
+    }
+  `);
+
   // const isAuthenticated = useAuthentication();
   // const socket = io('ws://' + window.location.hostname + ':8000');
 
@@ -106,6 +118,7 @@ export default function Home() {
   //     setShowCreateRoomCard(false)
   //   }
   // }
+
   useEffect(() => {
     const mappedEvents = new Map(Object.entries(events));
     mappedEvents.forEach((data) => {
@@ -117,41 +130,6 @@ export default function Home() {
   useEffect(() => {
     filterEvents('');
   }, [eventsData]);
-
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     fetchRooms();
-  //     socket.on('all_rooms', (rooms) => {
-  //       const mappedRooms = new Map(Object.entries(rooms));
-  //       mappedRooms.forEach((data) => {
-  //         data.color = getRandomColor(); // Add random color to each room
-  //       });
-  //       setRoomsData(mappedRooms);
-  //     });
-  //     socket.on('rooms_updated', () => {
-  //       console.log('rooms updated');
-  //       fetchRooms();
-  //       // set roomsData to new data
-  //     });
-  //   };
-
-  //   window.addEventListener('keydown', handleKeyPress);
-  //   fetchData();
-
-  //   return () => {
-  //     window.removeEventListener('keydown', handleKeyPress);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log(roomsData);
-  //   filterEvents('');
-  // }, [roomsData]);
-
-  // useEffect(() => {
-  //   setShowLoginCard(!isAuthenticated);
-  // }, [isAuthenticated]);
 
   const filterEvents = (query) => {
     const filtered = Array.from(eventsData).filter(([eventId, data]) => {

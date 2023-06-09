@@ -14,10 +14,6 @@ export default function Router() {
             element={<Navigate to="/dashboard" />}
           />
         <Route
-            path="/index.html"
-            element={<Navigate to="/dashboard" />}
-          />
-        <Route
           path="/dashboard"
           element={<DashboardLayout />}
         >
