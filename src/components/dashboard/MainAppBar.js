@@ -16,6 +16,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from '@mui/material';
+import DriveEtaIcon from '@mui/icons-material/DriveEta';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Account', 'My Events', 'Logout'];
@@ -54,7 +56,8 @@ function ResponsiveAppBar() {
     <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} href="/"/>
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} href="/"/> */}
+          <DriveEtaIcon sx={{marginRight: 2}}/>
           <Typography
             variant="h6"
             noWrap
@@ -74,7 +77,7 @@ function ResponsiveAppBar() {
           </Typography>
           
           {/* if the screen is small: */}
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}/>
+          <Icon src='./src/components/dashboard/MainAppBar.js' sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} href="/"/>
           <Typography
             variant="h5"
             noWrap

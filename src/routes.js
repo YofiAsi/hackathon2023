@@ -3,6 +3,7 @@ import JoinEvent from './components/Pages/JoinEvent'
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Page404 from './components/Pages/Page404';
+import MatchPage from './components/Pages/MatchPage';
 
 export default function Router() {
   return (
@@ -30,6 +31,10 @@ export default function Router() {
             element={<JoinEvent/>}
           />
           <Route
+            path="match"
+            element={<MatchPage/>}
+          />
+          <Route
             path="event/:eventId"
             element={<JoinEvent />}
           />
@@ -40,14 +45,14 @@ export default function Router() {
           path="404"
           element={<Page404 />}
         />
-        <Route
+        {/* <Route
             path="*"
             element={<Navigate to="/404" />}
           />
         <Route
           path="*"
           element={<Navigate to="/404" />}
-        />
+        /> */}
       </Routes>
   );
 }
